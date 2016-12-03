@@ -23,8 +23,6 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import static spark.Spark.after;
 import static spark.Spark.get;
 import static spark.Spark.port;
@@ -55,7 +53,6 @@ public class Main {
             stmt.executeUpdate("CREATE TABLE IF NOT EXISTS Users(User_ID text, Name text, Score int, Transient_IVORNs text[]);");
             return "Table Users Created Successfully.";
         } catch (SQLException | URISyntaxException ex) {
-            Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);
             return "Execption Occured: Table Users Not Created.";
         }
     }
@@ -67,7 +64,6 @@ public class Main {
             stmt.executeUpdate("DROP TABLE Users");
             return "Table Users Successfully Dropped.";
         } catch (SQLException | URISyntaxException ex) {
-            Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);
             return "Exception Occured: Table Users Not Dropped.";
         }
     }
@@ -83,7 +79,6 @@ public class Main {
                 users.add(new User(rs.getString("User_ID"), rs.getString("Name"), rs.getInt("Score"), new ArrayList<>(Arrays.asList((String[])rs.getArray("Transient_IVORNs").getArray()))));
             }
         } catch (SQLException | URISyntaxException ex) {
-            Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);
         }
         return users;
     }
