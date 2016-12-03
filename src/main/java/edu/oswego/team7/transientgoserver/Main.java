@@ -38,6 +38,7 @@ public class Main {
     public static void main(String[] args) {
         port(5050);
         Gson gson = new Gson();
+        get("/", (request, response) -> "Welcome to Transient-Go Server");
         get("/create", (request, response) -> createUsersTable(), gson::toJson);
         get("/drop", (request, response) -> dropUsersTable(), gson::toJson);
         get("/user/:id", (request, response) -> getUserByID(request.params(":id")), gson::toJson);
