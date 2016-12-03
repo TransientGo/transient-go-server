@@ -36,7 +36,7 @@ import java.sql.Connection;
  */
 public class Main {
     public static void main(String[] args) {
-        port(8080);
+        port(5050);
         Gson gson = new Gson();
         get("/create", (request, response) -> createUsersTable(), gson::toJson);
         get("/drop", (request, response) -> dropUsersTable(), gson::toJson);
