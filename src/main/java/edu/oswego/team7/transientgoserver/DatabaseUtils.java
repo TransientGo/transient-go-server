@@ -90,12 +90,11 @@ class DatabaseUtils {
     static Map<String, Object> getLeaderboard() {
         Map map = new HashMap<>();
         try(Connection connection = DatabaseUrl.extract().getConnection()) {
-            PreparedStatement pstmt = connection.prepareStatement("SELECT Name, Score, Transient_IVORNs FROM Users");
+            PreparedStatement pstmt = connection.prepareStatement("SELECT Name, Score FROM Users");
             ResultSet rs = pstmt.executeQuery();
             rs.next();
             map.put("name", rs.getString("Name"));
             map.put("score", rs.getInt("Score"));
-            map.put("transientIvorns", (String[])rs.getArray("Transient_IVORNs").getArray());
         } catch (SQLException | URISyntaxException ex) {
             map.put("success:", false);
         }
