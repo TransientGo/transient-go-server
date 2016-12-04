@@ -97,6 +97,7 @@ class DatabaseUtils {
             Map map = new HashMap<>();
             map.put("name", rs.getString("name"));
             map.put("score", rs.getInt("score"));
+            list.add(map);
             }
         } catch (SQLException | URISyntaxException ex) {
         }
