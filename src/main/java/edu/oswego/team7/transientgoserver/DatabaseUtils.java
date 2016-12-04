@@ -126,7 +126,6 @@ class DatabaseUtils {
     static Map<String, Boolean> addUserTransientIVORN(String id, String ivorn) {
         Map map = new HashMap<>();
         try(Connection connection = DatabaseUrl.extract().getConnection()) {
-            connection.setAutoCommit(false);
             //CallableStatement appendProc = connection.prepareCall("{ ? = call array_append(transient_ivorns, ?)}");
             //appendProc.registerOutParameter(1, Types.ARRAY);
             //appendProc.setString(2, ivorn);
