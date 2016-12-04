@@ -35,7 +35,7 @@ public class Main {
         get("/v1", (request, response) -> "Welcome to Transient-Go Server");
         post("/v1/users", (request, response) -> DatabaseUtils.createUsersTable(), gson::toJson);
         delete("/v1/users", (request, response) -> DatabaseUtils.dropUsersTable(), gson::toJson);
-        put("/v1/user/id/:id/name/:name", (request, response) -> DatabaseUtils.createUser(request.params(":id"), request.params(":user")), gson::toJson);
+        put("/v1/user/id/:id/name/:name", (request, response) -> DatabaseUtils.createUser(request.params(":id"), request.params(":name")), gson::toJson);
         get("/v1/user/:id", (request, response) -> DatabaseUtils.getUserByID(request.params(":id")), gson::toJson);
         get("/v1/leaderboard", (request, response) -> DatabaseUtils.getLeaderboard(), gson::toJson);
         after((request, response) -> {
