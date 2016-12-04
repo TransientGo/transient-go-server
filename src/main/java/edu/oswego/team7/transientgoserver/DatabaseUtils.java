@@ -126,20 +126,13 @@ class DatabaseUtils {
     static Map<String, Boolean> addUserTransientIVORN(String id, String ivorn) {
         Map map = new HashMap<>();
         try(Connection connection = DatabaseUrl.extract().getConnection()) {
-            //CallableStatement appendProc = connection.prepareCall("{ ? = call array_append(transient_ivorns, ?)}");
-            //appendProc.registerOutParameter(1, Types.ARRAY);
-            //appendProc.setString(2, ivorn);
-            //appendProc.execute();
-            //PreparedStatement pstmt = connection.prepareStatement("UPDATE users SET transient_ivorns = ? WHERE user_id = ?");
-            //pstmt.setArray(1, appendProc.getArray(1));
-            PreparedStatement pstmt = connection.prepareStatement("UPDATE users SET transient_ivorns = array_append('{\"s1\",\"s2\"}', 's3'::text) WHERE user_id = ?");
-            //pstmt.setString(1, ivorn);
-            pstmt.setString(1, id);
+            PreparedStatement pstmt = connection.prepareStatement("UPDATE users SET transient_ivorns = array_append(transient_ivorns, ?::text) WHERE user_id = ?");
+            pstmt.setString(1, ivorn);
+            pstmt.setString(2, id);
             if(pstmt.executeUpdate() > 0)
                 map.put("success", true);
             else
                 map.put("success", false);
-            //appendProc.close();
             pstmt.close();
             
         } catch (SQLException | URISyntaxException ex) {
