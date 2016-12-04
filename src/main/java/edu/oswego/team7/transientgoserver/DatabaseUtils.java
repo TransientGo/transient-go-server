@@ -77,7 +77,7 @@ class DatabaseUtils {
     static Map<String, Object> getUserByID(String id) {
         Map map = new HashMap<>();
         try(Connection connection = DatabaseUrl.extract().getConnection()) {
-            PreparedStatement pstmt = connection.prepareStatement("SELECT name, score, transient_ivorns FROM users WHERE user_id = '?'");
+            PreparedStatement pstmt = connection.prepareStatement("SELECT name, score, transient_ivorns FROM users WHERE user_id = ?");
             pstmt.setString(1, id);
             ResultSet rs = pstmt.executeQuery();
             rs.next();
@@ -107,7 +107,7 @@ class DatabaseUtils {
     static Map<String, Boolean> updateUserScore(String id, int score) {
         Map map = new HashMap<>();
         try(Connection connection = DatabaseUrl.extract().getConnection()) {
-            PreparedStatement pstmt = connection.prepareStatement("UPDATE users SET score = ? WHERE user_id = '?'");
+            PreparedStatement pstmt = connection.prepareStatement("UPDATE users SET score = ? WHERE user_id = ?");
             pstmt.setInt(1, score);
             pstmt.setString(2, id);
             if(pstmt.executeUpdate() > 0)
@@ -124,7 +124,7 @@ class DatabaseUtils {
     static Map<String, Boolean> addUserTransientIVORN(String id, String ivorn) {
         Map map = new HashMap<>();
         try(Connection connection = DatabaseUrl.extract().getConnection()) {
-            PreparedStatement pstmt = connection.prepareStatement("UPDATE users SET transient_ivorns = '?' || transient_ivorns WHERE user_id = '?'");
+            PreparedStatement pstmt = connection.prepareStatement("UPDATE users SET transient_ivorns = ? || transient_ivorns WHERE user_id = ?");
             pstmt.setString(1, ivorn);
             pstmt.setString(2, id);
             if(pstmt.executeUpdate() > 0)
