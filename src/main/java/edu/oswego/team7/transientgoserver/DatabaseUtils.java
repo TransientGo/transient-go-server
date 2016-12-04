@@ -126,6 +126,7 @@ class DatabaseUtils {
     static Map<String, Boolean> addUserTransientIVORN(String id, String ivorn) {
         Map map = new HashMap<>();
         try(Connection connection = DatabaseUrl.extract().getConnection()) {
+            connection.setAutoCommit(false);
             CallableStatement appendProc = connection.prepareCall("{ ? = call array_append(?, ?)}");
             appendProc.registerOutParameter(1, Types.ARRAY);
             appendProc.setString(2, "transient_ivorns");
@@ -138,6 +139,8 @@ class DatabaseUtils {
                 map.put("success", true);
             else
                 map.put("success", false);
+            appendProc.close();
+            pstmt.close();
             
         } catch (SQLException | URISyntaxException ex) {
             map.put("success", false);
