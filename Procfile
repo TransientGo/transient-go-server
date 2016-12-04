@@ -1,1 +1,1 @@
-web: java -jar target/transient-go-server-1.0.jar
+web: java -jar target/transient-go-server.jar
