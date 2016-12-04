@@ -43,7 +43,6 @@
                 <configuration>
                     <archive>
                         <manifest>
-                            <addClasspath>true</addClasspath>
                             <mainClass>edu.oswego.team7.transientgoserver.Main</mainClass>
                         </manifest>
                     </archive>
