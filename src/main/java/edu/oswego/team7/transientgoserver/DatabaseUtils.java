@@ -127,10 +127,9 @@ class DatabaseUtils {
         Map map = new HashMap<>();
         try(Connection connection = DatabaseUrl.extract().getConnection()) {
             connection.setAutoCommit(false);
-            CallableStatement appendProc = connection.prepareCall("{ ? = call array_append(?, ?)}");
+            CallableStatement appendProc = connection.prepareCall("{ ? = call array_append(transient_ivorns, ?)}");
             appendProc.registerOutParameter(1, Types.ARRAY);
-            appendProc.setString(2, "transient_ivorns");
-            appendProc.setString(3, ivorn);
+            appendProc.setString(2, ivorn);
             appendProc.execute();
             PreparedStatement pstmt = connection.prepareStatement("UPDATE users SET transient_ivorns = ? WHERE user_id = ?");
             pstmt.setArray(1, appendProc.getArray(1));
