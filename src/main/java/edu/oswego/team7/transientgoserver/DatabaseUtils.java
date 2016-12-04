@@ -135,7 +135,7 @@ class DatabaseUtils {
             //pstmt.setArray(1, appendProc.getArray(1));
             PreparedStatement pstmt = connection.prepareStatement("UPDATE users SET transient_ivorns = array_append('{'s1','s2'}', 's3') WHERE user_id = ?");
             //pstmt.setString(1, ivorn);
-            //pstmt.setString(2, id);
+            pstmt.setString(1, id);
             if(pstmt.executeUpdate() > 0)
                 map.put("success", true);
             else
