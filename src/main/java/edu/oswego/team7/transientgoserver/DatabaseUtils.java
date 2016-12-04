@@ -36,7 +36,7 @@ class DatabaseUtils {
         Map map = new HashMap<>();
         try(Connection connection = DatabaseUrl.extract().getConnection()) {
             Statement stmt = connection.createStatement();
-            stmt.executeUpdate("CREATE TABLE IF NOT EXISTS Users(User_ID text, Name text, Score int, Transient_IVORNs text[]);");
+            stmt.executeUpdate("CREATE TABLE IF NOT EXISTS users(user_id text, name text, score int, transient_ivorns text[]);");
             map.put("success", true);
         } catch (SQLException | URISyntaxException ex) {
             map.put("success", false);
@@ -48,7 +48,7 @@ class DatabaseUtils {
         Map map = new HashMap<>();
         try(Connection connection = DatabaseUrl.extract().getConnection()) {
             Statement stmt = connection.createStatement();
-            stmt.executeUpdate("DROP TABLE Users");
+            stmt.executeUpdate("DROP TABLE users");
             map.put("success", true);
         } catch (SQLException | URISyntaxException ex) {
             map.put("success", false);
@@ -59,7 +59,7 @@ class DatabaseUtils {
     static Map<String, Boolean> createUser(String id, String name) {
         Map map = new HashMap<>();
         try(Connection connection = DatabaseUrl.extract().getConnection()) {
-            PreparedStatement pstmt = connection.prepareStatement("INSERT INTO Users(User_ID, Name) VALUES(?, ?, 0, {})");
+            PreparedStatement pstmt = connection.prepareStatement("INSERT INTO users(user_id, name, score, transient_ivorns) VALUES(?, ?, 0, {})");
             pstmt.setString(1, id);
             pstmt.setString(2, name);
             if(pstmt.executeUpdate() > 0)
@@ -76,13 +76,13 @@ class DatabaseUtils {
     static Map<String, Object> getUserByID(String id) {
         Map map = new HashMap<>();
         try(Connection connection = DatabaseUrl.extract().getConnection()) {
-            PreparedStatement pstmt = connection.prepareStatement("SELECT Name, Score, Transient_IVORNs FROM Users WHERE User_ID = ?");
+            PreparedStatement pstmt = connection.prepareStatement("SELECT name, score, transient_ivorns FROM users WHERE user_id = ?");
             pstmt.setString(1, id);
             ResultSet rs = pstmt.executeQuery();
             rs.next();
-            map.put("name", rs.getString("Name"));
-            map.put("score", rs.getInt("Score"));
-            map.put("transientIvorns", (String[])rs.getArray("Transient_IVORNs").getArray());
+            map.put("name", rs.getString("name"));
+            map.put("score", rs.getInt("score"));
+            map.put("transientIvorns", (String[])rs.getArray("transient_ivorns").getArray());
         } catch (SQLException | URISyntaxException ex) {}
         return map;
     }
@@ -90,11 +90,11 @@ class DatabaseUtils {
     static Map<String, Object> getLeaderboard() {
         Map map = new HashMap<>();
         try(Connection connection = DatabaseUrl.extract().getConnection()) {
-            PreparedStatement pstmt = connection.prepareStatement("SELECT Name, Score FROM Users");
+            PreparedStatement pstmt = connection.prepareStatement("SELECT name, score FROM users");
             ResultSet rs = pstmt.executeQuery();
             rs.next();
-            map.put("name", rs.getString("Name"));
-            map.put("score", rs.getInt("Score"));
+            map.put("name", rs.getString("name"));
+            map.put("score", rs.getInt("score"));
         } catch (SQLException | URISyntaxException ex) {
             map.put("success:", false);
         }
@@ -104,7 +104,7 @@ class DatabaseUtils {
     static Map<String, Boolean> updateUserScore(String id, int score) {
         Map map = new HashMap<>();
         try(Connection connection = DatabaseUrl.extract().getConnection()) {
-            PreparedStatement pstmt = connection.prepareStatement("UPDATE Users SET Score = ? WHERE User_ID = ?");
+            PreparedStatement pstmt = connection.prepareStatement("UPDATE users SET score = ? WHERE user_id = ?");
             pstmt.setInt(1, score);
             pstmt.setString(2, id);
             if(pstmt.executeUpdate() > 0)
@@ -121,7 +121,7 @@ class DatabaseUtils {
     static Map<String, Boolean> addUserTransientIVORN(String id, String ivorn) {
         Map map = new HashMap<>();
         try(Connection connection = DatabaseUrl.extract().getConnection()) {
-            PreparedStatement pstmt = connection.prepareStatement("UPDATE Users SET Transient_IVORNs = ? || Transient_IVORNs WHERE User_ID = ?");
+            PreparedStatement pstmt = connection.prepareStatement("UPDATE users SET transient_ivorns = ? || transient_ivorns WHERE user_id = ?");
             pstmt.setString(1, ivorn);
             pstmt.setString(2, id);
             if(pstmt.executeUpdate() > 0)
