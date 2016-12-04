@@ -59,7 +59,7 @@ class DatabaseUtils {
     static Map<String, Boolean> createUser(String id, String name) {
         Map map = new HashMap<>();
         try(Connection connection = DatabaseUrl.extract().getConnection()) {
-            PreparedStatement pstmt = connection.prepareStatement("INSERT INTO Users(User_ID, Name) VALUES(?, ?)");
+            PreparedStatement pstmt = connection.prepareStatement("INSERT INTO Users(User_ID, Name) VALUES(?, ?, 0, {})");
             pstmt.setString(1, id);
             pstmt.setString(2, name);
             if(pstmt.executeUpdate() > 0)
