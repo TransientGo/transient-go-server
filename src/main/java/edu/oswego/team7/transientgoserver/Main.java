@@ -37,7 +37,7 @@ public class Main {
         delete("/v1/users", (request, response) -> DatabaseUtils.dropUsersTable(), gson::toJson);
         put("/v1/user/id/:id/name/:name", (request, response) -> DatabaseUtils.createUser(request.params(":id"), request.params(":user")), gson::toJson);
         get("/v1/user/:id", (request, response) -> DatabaseUtils.getUserByID(request.params(":id")), gson::toJson);
-        get("/v1/learderboard", (request, response) -> DatabaseUtils.getLeaderboard(), gson::toJson);
+        get("/v1/leaderboard", (request, response) -> DatabaseUtils.getLeaderboard(), gson::toJson);
         after((request, response) -> {
             response.header("Content-Encoding", "gzip");
             response.type("application/json");
