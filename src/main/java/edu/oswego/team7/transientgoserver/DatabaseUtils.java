@@ -124,7 +124,7 @@ class DatabaseUtils {
     static Map<String, Boolean> addUserTransientIVORN(String id, String ivorn) {
         Map map = new HashMap<>();
         try(Connection connection = DatabaseUrl.extract().getConnection()) {
-            PreparedStatement pstmt = connection.prepareStatement("UPDATE users SET transient_ivorns = array_append(transient_ivorns, ?) WHERE user_id = ?");
+            PreparedStatement pstmt = connection.prepareStatement("UPDATE users SET transient_ivorns = array_append(transient_ivorns, '?') WHERE user_id = ?");
             pstmt.setString(1, ivorn);
             pstmt.setString(2, id);
             if(pstmt.executeUpdate() > 0)
