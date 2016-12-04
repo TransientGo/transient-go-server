@@ -143,7 +143,7 @@ class DatabaseUtils {
             pstmt.close();
             
         } catch (SQLException | URISyntaxException ex) {
-            map.put("success", false);
+            map.put("error", ex.getMessage());
         }
         return map;
     }
