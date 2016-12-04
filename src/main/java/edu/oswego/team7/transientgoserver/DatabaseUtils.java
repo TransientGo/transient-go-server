@@ -23,6 +23,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -87,18 +88,19 @@ class DatabaseUtils {
         return map;
     }
     
-    static Map<String, Object> getLeaderboard() {
-        Map map = new HashMap<>();
+    static ArrayList<Map<String, Object>> getLeaderboard() {
+        ArrayList list = new ArrayList<>();
         try(Connection connection = DatabaseUrl.extract().getConnection()) {
             PreparedStatement pstmt = connection.prepareStatement("SELECT name, score FROM users");
             ResultSet rs = pstmt.executeQuery();
-            rs.next();
+            while(rs.next()) {
+            Map map = new HashMap<>();
             map.put("name", rs.getString("name"));
             map.put("score", rs.getInt("score"));
+            }
         } catch (SQLException | URISyntaxException ex) {
-            map.put("success:", false);
         }
-        return map;
+        return list;
     }
     
     static Map<String, Boolean> updateUserScore(String id, int score) {
