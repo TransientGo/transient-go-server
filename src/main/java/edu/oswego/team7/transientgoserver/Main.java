@@ -48,8 +48,7 @@ public class Main {
         });
     }
     public static String createUsersTable() {
-        try {
-            Connection connection = DatabaseUrl.extract().getConnection();
+        try(Connection connection = DatabaseUrl.extract().getConnection()) {
             Statement stmt = connection.createStatement();
             stmt.executeUpdate("CREATE TABLE IF NOT EXISTS Users(User_ID text, Name text, Score int, Transient_IVORNs text[]);");
             return "Table Users Created Successfully.";
@@ -59,8 +58,7 @@ public class Main {
     }
     
     public static String dropUsersTable() {
-        try {
-            Connection connection = DatabaseUrl.extract().getConnection();
+        try(Connection connection = DatabaseUrl.extract().getConnection()) {
             Statement stmt = connection.createStatement();
             stmt.executeUpdate("DROP TABLE Users");
             return "Table Users Successfully Dropped.";
@@ -71,16 +69,14 @@ public class Main {
 
     public static ArrayList<User> getUserByID(String id) {
         ArrayList<User> users = new ArrayList<>();
-        try {
-            Connection connection = DatabaseUrl.extract().getConnection();
+        try(Connection connection = DatabaseUrl.extract().getConnection()) {
             PreparedStatement pstmt = connection.prepareStatement("SELECT * FROM Users WHERE User_ID = ?");
             pstmt.setString(1, id);
             ResultSet rs = pstmt.executeQuery();
             while (rs.next()) {
                 users.add(new User(rs.getString("User_ID"), rs.getString("Name"), rs.getInt("Score"), new ArrayList<>(Arrays.asList((String[])rs.getArray("Transient_IVORNs").getArray()))));
             }
-        } catch (SQLException | URISyntaxException ex) {
-        }
+        } catch (SQLException | URISyntaxException ex) {}
         return users;
     }
 }
