@@ -18,11 +18,13 @@ package edu.oswego.team7.transientgoserver;
 
 import com.heroku.sdk.jdbc.DatabaseUrl;
 import java.net.URISyntaxException;
+import java.sql.CallableStatement;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.sql.Types;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
@@ -124,8 +126,13 @@ class DatabaseUtils {
     static Map<String, Boolean> addUserTransientIVORN(String id, String ivorn) {
         Map map = new HashMap<>();
         try(Connection connection = DatabaseUrl.extract().getConnection()) {
-            PreparedStatement pstmt = connection.prepareStatement("UPDATE users SET transient_ivorns = array_append(transient_ivorns, ?) WHERE user_id = ?");
-            pstmt.setString(1, ivorn);
+            CallableStatement appendProc = connection.prepareCall("{ ? = call array_append(?, ?)}");
+            appendProc.registerOutParameter(1, Types.ARRAY);
+            appendProc.setString(2, "transient_ivorns");
+            appendProc.setString(3, ivorn);
+            appendProc.execute();
+            PreparedStatement pstmt = connection.prepareStatement("UPDATE users SET transient_ivorns = ? WHERE user_id = ?");
+            pstmt.setArray(1, appendProc.getArray(1));
             pstmt.setString(2, id);
             if(pstmt.executeUpdate() > 0)
                 map.put("success", true);
