@@ -36,7 +36,7 @@ import java.sql.Connection;
  */
 public class Main {
     public static void main(String[] args) {
-        port(5050);
+        port(Integer.valueOf(System.getenv("PORT")));
         Gson gson = new Gson();
         get("/", (request, response) -> "Welcome to Transient-Go Server");
         get("/create", (request, response) -> createUsersTable(), gson::toJson);
