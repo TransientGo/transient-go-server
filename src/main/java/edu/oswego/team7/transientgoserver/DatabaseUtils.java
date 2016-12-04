@@ -91,7 +91,7 @@ class DatabaseUtils {
     static ArrayList<Map<String, Object>> getLeaderboard() {
         ArrayList list = new ArrayList<>();
         try(Connection connection = DatabaseUrl.extract().getConnection()) {
-            PreparedStatement pstmt = connection.prepareStatement("SELECT name, score FROM users");
+            PreparedStatement pstmt = connection.prepareStatement("SELECT name, score FROM users ORDER BY score DESC");
             ResultSet rs = pstmt.executeQuery();
             while(rs.next()) {
             Map map = new HashMap<>();
