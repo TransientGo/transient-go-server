@@ -96,7 +96,9 @@ class DatabaseUtils {
             map.put("name", rs.getString("Name"));
             map.put("score", rs.getInt("Score"));
             map.put("transientIvorns", (String[])rs.getArray("Transient_IVORNs").getArray());
-        } catch (SQLException | URISyntaxException ex) {}
+        } catch (SQLException | URISyntaxException ex) {
+            map.put("success:", false);
+        }
         return map;
     }
     
