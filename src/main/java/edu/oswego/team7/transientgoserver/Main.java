@@ -29,6 +29,9 @@ import static spark.Spark.port;
 import com.heroku.sdk.jdbc.DatabaseUrl;
 import java.net.URISyntaxException;
 import java.sql.Connection;
+import static spark.Spark.delete;
+import static spark.Spark.post;
+import static spark.Spark.put;
 
 /**
  *
@@ -38,45 +41,15 @@ public class Main {
     public static void main(String[] args) {
         port(Integer.valueOf(System.getenv("PORT")));
         Gson gson = new Gson();
-        get("/", (request, response) -> "Welcome to Transient-Go Server");
-        get("/create", (request, response) -> createUsersTable(), gson::toJson);
-        get("/drop", (request, response) -> dropUsersTable(), gson::toJson);
-        get("/user/:id", (request, response) -> getUserByID(request.params(":id")), gson::toJson);
+        get("/v1", (request, response) -> "Welcome to Transient-Go Server");
+        post("/v1/users", (request, response) -> DatabaseUtils.createUsersTable(), gson::toJson);
+        delete("/v1/users", (request, response) -> DatabaseUtils.dropUsersTable(), gson::toJson);
+        put("/v1/user/id/:id/name/:name", (request, response) -> DatabaseUtils.createUser(request.params(":id"), request.params(":user")), gson::toJson);
+        get("/v1/user/:id", (request, response) -> DatabaseUtils.getUserByID(request.params(":id")), gson::toJson);
+        get("/v1/learderboard", (request, response) -> DatabaseUtils.getLeaderboard(), gson::toJson);
         after((request, response) -> {
             response.header("Content-Encoding", "gzip");
             response.type("application/json");
         });
-    }
-    public static String createUsersTable() {
-        try(Connection connection = DatabaseUrl.extract().getConnection()) {
-            Statement stmt = connection.createStatement();
-            stmt.executeUpdate("CREATE TABLE IF NOT EXISTS Users(User_ID text, Name text, Score int, Transient_IVORNs text[]);");
-            return "Table Users Created Successfully.";
-        } catch (SQLException | URISyntaxException ex) {
-            return "Execption Occured: Table Users Not Created.";
-        }
-    }
-    
-    public static String dropUsersTable() {
-        try(Connection connection = DatabaseUrl.extract().getConnection()) {
-            Statement stmt = connection.createStatement();
-            stmt.executeUpdate("DROP TABLE Users");
-            return "Table Users Successfully Dropped.";
-        } catch (SQLException | URISyntaxException ex) {
-            return "Exception Occured: Table Users Not Dropped.";
-        }
-    }
-
-    public static ArrayList<User> getUserByID(String id) {
-        ArrayList<User> users = new ArrayList<>();
-        try(Connection connection = DatabaseUrl.extract().getConnection()) {
-            PreparedStatement pstmt = connection.prepareStatement("SELECT * FROM Users WHERE User_ID = ?");
-            pstmt.setString(1, id);
-            ResultSet rs = pstmt.executeQuery();
-            while (rs.next()) {
-                users.add(new User(rs.getString("User_ID"), rs.getString("Name"), rs.getInt("Score"), new ArrayList<>(Arrays.asList((String[])rs.getArray("Transient_IVORNs").getArray()))));
-            }
-        } catch (SQLException | URISyntaxException ex) {}
-        return users;
     }
 }
