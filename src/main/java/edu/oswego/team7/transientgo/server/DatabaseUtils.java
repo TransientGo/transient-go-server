@@ -17,6 +17,9 @@
 package edu.oswego.team7.transientgo.server;
 
 import com.heroku.sdk.jdbc.DatabaseUrl;
+import edu.oswego.transientgo.core.Leader;
+import edu.oswego.transientgo.core.Leaderboard;
+import edu.oswego.transientgo.core.User;
 import java.net.URISyntaxException;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -24,6 +27,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -74,34 +78,29 @@ class DatabaseUtils {
         return map;
     }
 
-    static Map<String, Object> getUserByID(String id) {
-        Map map = new HashMap<>();
+    static User getUserByID(String id) {
+        User user = null;
         try(Connection connection = DatabaseUrl.extract().getConnection()) {
-            PreparedStatement pstmt = connection.prepareStatement("SELECT name, score, transient_ivorns FROM users WHERE user_id = ?");
+            PreparedStatement pstmt = connection.prepareStatement("SELECT user_id, name, score, transient_ivorns FROM users WHERE user_id = ?");
             pstmt.setString(1, id);
             ResultSet rs = pstmt.executeQuery();
             rs.next();
-            map.put("name", rs.getString("name"));
-            map.put("score", rs.getInt("score"));
-            map.put("transientIvorns", (String[])rs.getArray("transient_ivorns").getArray());
+            user = new User(rs.getString("user_id"), rs.getString("name"), rs.getInt("score"), new ArrayList<>(Arrays.asList((String[])rs.getArray("transient_ivorns").getArray())));
         } catch (SQLException | URISyntaxException ex) {}
-        return map;
+        return user;
     }
     
-    static ArrayList<Map<String, Object>> getLeaderboard() {
-        ArrayList list = new ArrayList<>();
+    static Leaderboard getLeaderboard() {
+        Leaderboard leaderboard = new Leaderboard();
         try(Connection connection = DatabaseUrl.extract().getConnection()) {
             PreparedStatement pstmt = connection.prepareStatement("SELECT name, score FROM users ORDER BY score DESC");
             ResultSet rs = pstmt.executeQuery();
             while(rs.next()) {
-            Map map = new HashMap<>();
-            map.put("name", rs.getString("name"));
-            map.put("score", rs.getInt("score"));
-            list.add(map);
+                leaderboard.addLeader(new Leader(rs.getString("name"), rs.getInt("score")));
             }
         } catch (SQLException | URISyntaxException ex) {
         }
-        return list;
+        return leaderboard;
     }
     
     static Map<String, Boolean> updateUserScore(String id, int score) {
