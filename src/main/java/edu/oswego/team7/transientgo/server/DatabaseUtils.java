@@ -68,7 +68,7 @@ class DatabaseUtils {
             pstmt.setString(1, id);
             pstmt.setString(2, name);
             if(pstmt.executeUpdate() > 0)
-                map.put("success", true);
+                map.put("id", id);
             else
                 map.put("success", false);
             
