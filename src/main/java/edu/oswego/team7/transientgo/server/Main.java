@@ -32,10 +32,7 @@ public class Main {
     public static void main(String[] args) {
         port(Integer.valueOf(System.getenv("PORT")));
         Gson gson = new Gson();
-        //get("/v1", (request, response) -> "Welcome to Transient-Go Server");
-        //post("/v1/users", (request, response) -> DatabaseUtils.createUsersTable(), gson::toJson);
-        //delete("/v1/users", (request, response) -> DatabaseUtils.dropUsersTable(), gson::toJson);
-        //put("/v1/user/new/:id/name/:name", (request, response) -> DatabaseUtils.createUser(request.params(":id"), request.params(":name")), gson::toJson);
+        get("/v1", (request, response) -> "Welcome to Transient-Go API Server");
         post("/v1/user", (request, response) -> DatabaseUtils.createUser(request.queryParams("id"), request.queryParams("name")), gson::toJson);
         get("/v1/user/:id", (request, response) -> DatabaseUtils.getUserByID(request.params(":id")), gson::toJson);
         put("/v1/user/:id/score/:score", (request, response) -> DatabaseUtils.updateUserScore(request.params(":id"), Integer.parseInt(request.params(":score"))), gson::toJson);

@@ -37,30 +37,6 @@ import java.util.Map;
  */
 class DatabaseUtils {
     
-    static Map<String, Boolean> createUsersTable() {
-        Map map = new HashMap<>();
-        try(Connection connection = DatabaseUrl.extract().getConnection()) {
-            Statement stmt = connection.createStatement();
-            stmt.executeUpdate("CREATE TABLE IF NOT EXISTS users(user_id text, name text, score int, transient_ivorns text[]);");
-            map.put("success", true);
-        } catch (SQLException | URISyntaxException ex) {
-            map.put("success", false);
-        }
-        return map;
-    }
-    
-    static Map<String, Boolean> dropUsersTable() {
-        Map map = new HashMap<>();
-        try(Connection connection = DatabaseUrl.extract().getConnection()) {
-            Statement stmt = connection.createStatement();
-            stmt.executeUpdate("DROP TABLE users");
-            map.put("success", true);
-        } catch (SQLException | URISyntaxException ex) {
-            map.put("success", false);
-        }
-        return map;
-    }
-    
     static Map<String, Boolean> createUser(String id, String name) {
         Map map = new HashMap<>();
         try(Connection connection = DatabaseUrl.extract().getConnection()) {
