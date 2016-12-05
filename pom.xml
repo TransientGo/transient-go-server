@@ -55,7 +55,7 @@
                     <appendAssemblyId>false</appendAssemblyId>
                     <archive>
                         <manifest>
-                            <mainClass>edu.oswego.team7.transientgoserver.Main</mainClass>
+                            <mainClass>edu.oswego.team7.transientgo.server.Main</mainClass>
                         </manifest>
                     </archive>
                 </configuration>

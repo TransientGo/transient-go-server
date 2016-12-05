@@ -14,7 +14,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package edu.oswego.team7.transientgoserver;
+package edu.oswego.team7.transientgo.server;
 
 import com.google.gson.Gson;
 import static spark.Spark.after;
