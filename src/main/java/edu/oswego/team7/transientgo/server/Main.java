@@ -18,6 +18,7 @@ package edu.oswego.team7.transientgo.server;
 
 import com.google.gson.Gson;
 import java.util.Base64;
+import spark.Request;
 import static spark.Spark.after;
 import static spark.Spark.before;
 import static spark.Spark.get;
@@ -34,8 +35,21 @@ public class Main {
     public static void main(String[] args) {
         port(Integer.valueOf(System.getenv("PORT")));
         Gson gson = new Gson();
-        before("/v1/user/:id", (request, response) -> {
-            String auth = request.headers("Authorization");
+        before("/v1/user/:id", (request, response) -> authenticate(request));
+        before("/v1/user/:id/*", (request, response) -> authenticate(request));
+        post("/v1/user", (request, response) -> DatabaseUtils.createUser(request.queryParams("id"), request.queryParams("pass"), request.queryParams("name")), gson::toJson);
+        get("/v1/user/:id", (request, response) -> DatabaseUtils.getUserByID(request.params(":id")), gson::toJson);
+        put("/v1/user/:id/score/:score", (request, response) -> DatabaseUtils.updateUserScore(request.params(":id"), Integer.parseInt(request.params(":score"))), gson::toJson);
+        put("/v1/user/:id/transient/:ivorn", (request, response) -> DatabaseUtils.addUserTransientIVORN(request.params(":id"), request.params(":ivorn")), gson::toJson);
+        get("/v1/leaderboard", (request, response) -> DatabaseUtils.getLeaderboard(), gson::toJson);
+        after((request, response) -> {
+            response.header("Content-Encoding", "gzip");
+            response.type("application/json");
+        });
+    }
+    
+    private static void authenticate(Request request) {
+        String auth = request.headers("Authorization");
             if(auth == null)
                 halt(401, "Authentication Error");
             String userpass = new String(Base64.getDecoder().decode(auth.split(" ", 2)[1]));
@@ -47,15 +61,5 @@ public class Main {
             if(!(DatabaseUtils.authenticate(user, pass) && user.equals(id))) {
                 halt(401, "Authentication Error");
             }
-        });
-        post("/v1/user", (request, response) -> DatabaseUtils.createUser(request.queryParams("id"), request.queryParams("pass"), request.queryParams("name")), gson::toJson);
-        get("/v1/user/:id", (request, response) -> DatabaseUtils.getUserByID(request.params(":id")), gson::toJson);
-        put("/v1/user/:id/score/:score", (request, response) -> DatabaseUtils.updateUserScore(request.params(":id"), Integer.parseInt(request.params(":score"))), gson::toJson);
-        put("/v1/user/:id/transient/:ivorn", (request, response) -> DatabaseUtils.addUserTransientIVORN(request.params(":id"), request.params(":ivorn")), gson::toJson);
-        get("/v1/leaderboard", (request, response) -> DatabaseUtils.getLeaderboard(), gson::toJson);
-        after((request, response) -> {
-            response.header("Content-Encoding", "gzip");
-            response.type("application/json");
-        });
     }
 }
