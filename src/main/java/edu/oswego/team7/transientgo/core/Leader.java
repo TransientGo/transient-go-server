@@ -14,30 +14,20 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package edu.oswego.transientgo.core;
-
-import java.util.ArrayList;
+package edu.oswego.team7.transientgo.core;
 
 /**
  *
  * @author Shakhar Dasgupta <sdasgupt@oswego.edu>
  */
-public class User {
+public class Leader {
     
-    private final String userId;
     private final String name;
     private final int score;
-    private final ArrayList<String> transientIVORNs;
 
-    public User(String userId, String name, int score, ArrayList<String> transientIVORNs) {
-        this.userId = userId;
+    public Leader(String name, int score) {
         this.name = name;
         this.score = score;
-        this.transientIVORNs = transientIVORNs;
-    }
-
-    public String getUserId() {
-        return userId;
     }
 
     public String getName() {
@@ -46,10 +36,6 @@ public class User {
 
     public int getScore() {
         return score;
-    }
-
-    public ArrayList<String> getTransientIVORNs() {
-        return transientIVORNs;
     }
     
 }

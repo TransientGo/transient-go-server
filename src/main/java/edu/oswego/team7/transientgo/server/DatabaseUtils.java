@@ -17,9 +17,9 @@
 package edu.oswego.team7.transientgo.server;
 
 import com.heroku.sdk.jdbc.DatabaseUrl;
-import edu.oswego.transientgo.core.Leader;
-import edu.oswego.transientgo.core.Leaderboard;
-import edu.oswego.transientgo.core.User;
+import edu.oswego.team7.transientgo.core.Leader;
+import edu.oswego.team7.transientgo.core.Leaderboard;
+import edu.oswego.team7.transientgo.core.User;
 import java.net.URISyntaxException;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
