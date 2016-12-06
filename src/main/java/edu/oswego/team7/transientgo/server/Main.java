@@ -35,7 +35,9 @@ public class Main {
         port(Integer.valueOf(System.getenv("PORT")));
         Gson gson = new Gson();
         before("/v1/user/*", (request, response) -> {
+            System.out.println("header: " + request.headers("Authorization"));
             String userpass = new String(Base64.getDecoder().decode(request.headers("Authorization").split(" ", 2)[1]));
+            System.out.println("userpass: " + userpass);
             String[] tokens = userpass.split(":", 2);
             String user = tokens[0];
             String pass = tokens[1];
