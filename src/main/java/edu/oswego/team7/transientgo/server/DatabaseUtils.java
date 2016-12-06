@@ -36,13 +36,14 @@ import java.util.Map;
  */
 class DatabaseUtils {
     
-    static Map<String, Boolean> createUser(String id, String name) {
+    static Map<String, Boolean> createUser(String id, String pass, String name) {
         Map map = new HashMap<>();
-        try(Connection connection = DatabaseUrl.extract().getConnection(); PreparedStatement pstmt = connection.prepareStatement("INSERT INTO users(user_id, name, score, transient_ivorns) VALUES(?, ?, 0, '{}')")) {
+        try(Connection connection = DatabaseUrl.extract().getConnection(); PreparedStatement pstmt = connection.prepareStatement("INSERT INTO users(user_id, pass, name, score, transient_ivorns) VALUES(?, ?, ?, 0, '{}')")) {
             pstmt.setString(1, id);
-            pstmt.setString(2, name);
+            pstmt.setString(2, pass);
+            pstmt.setString(3, name);
             if(pstmt.executeUpdate() > 0)
-                map.put("id", id);
+                map.put("success", true);
             else
                 map.put("success", false);
             
@@ -57,8 +58,8 @@ class DatabaseUtils {
         try(Connection connection = DatabaseUrl.extract().getConnection(); PreparedStatement pstmt = connection.prepareStatement("SELECT user_id, name, score, transient_ivorns FROM users WHERE user_id = ?")) {
             pstmt.setString(1, id);
             ResultSet rs = pstmt.executeQuery();
-            rs.next();
-            user = new User(rs.getString("user_id"), rs.getString("name"), rs.getInt("score"), new ArrayList<>(Arrays.asList((String[])rs.getArray("transient_ivorns").getArray())));
+            if(rs.next())
+                user = new User(rs.getString("user_id"), rs.getString("name"), rs.getInt("score"), new ArrayList<>(Arrays.asList((String[])rs.getArray("transient_ivorns").getArray())));
         } catch (SQLException | URISyntaxException ex) {}
         return user;
     }
@@ -106,5 +107,20 @@ class DatabaseUtils {
             map.put("error", ex.getMessage());
         }
         return map;
+    }
+    
+    static boolean authenticate(String user, String pass) {
+        try(Connection connection = DatabaseUrl.extract().getConnection(); PreparedStatement pstmt = connection.prepareStatement("SELECT password FROM users WHERE user_id = ?")) {
+            pstmt.setString(1, user);
+            ResultSet rs = pstmt.executeQuery();
+            if(rs.next()){
+                String storedPass = rs.getString("password");
+                if(pass.equals(storedPass))
+                    return true;
+            }
+            
+        } catch (SQLException | URISyntaxException ex) {
+        }
+        return false;
     }
 }

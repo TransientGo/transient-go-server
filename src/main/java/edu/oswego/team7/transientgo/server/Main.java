@@ -17,10 +17,12 @@
 package edu.oswego.team7.transientgo.server;
 
 import com.google.gson.Gson;
+import java.util.Base64;
 import static spark.Spark.after;
+import static spark.Spark.before;
 import static spark.Spark.get;
 import static spark.Spark.port;
-import static spark.Spark.delete;
+import static spark.Spark.halt;
 import static spark.Spark.post;
 import static spark.Spark.put;
 
@@ -32,8 +34,17 @@ public class Main {
     public static void main(String[] args) {
         port(Integer.valueOf(System.getenv("PORT")));
         Gson gson = new Gson();
-        get("/v1", (request, response) -> "Welcome to Transient-Go API Server");
-        post("/v1/user", (request, response) -> DatabaseUtils.createUser(request.queryParams("id"), request.queryParams("name")), gson::toJson);
+        before("/v1/user/*", (request, response) -> {
+            String userpass = new String(Base64.getDecoder().decode(request.headers("Authorization").split(" ", 2)[1]));
+            String[] tokens = userpass.split(":", 2);
+            String user = tokens[0];
+            String pass = tokens[1];
+            String id = request.queryParams(":id");
+            if(!(DatabaseUtils.authenticate(user, pass) && user.equals(id))) {
+                halt(401, "Authentication Error");
+            }
+        });
+        post("/v1/user", (request, response) -> DatabaseUtils.createUser(request.queryParams("id"), request.queryParams("pass"), request.queryParams("name")), gson::toJson);
         get("/v1/user/:id", (request, response) -> DatabaseUtils.getUserByID(request.params(":id")), gson::toJson);
         put("/v1/user/:id/score/:score", (request, response) -> DatabaseUtils.updateUserScore(request.params(":id"), Integer.parseInt(request.params(":score"))), gson::toJson);
         put("/v1/user/:id/transient/:ivorn", (request, response) -> DatabaseUtils.addUserTransientIVORN(request.params(":id"), request.params(":ivorn")), gson::toJson);
