@@ -82,23 +82,6 @@ class DatabaseUtils {
         return leaderboard;
     }
 
-    static Map<String, Boolean> updateUserScore(String id, int score) {
-        Map map = new HashMap<>();
-        try (Connection connection = DatabaseUrl.extract().getConnection(); PreparedStatement pstmt = connection.prepareStatement("UPDATE users SET score = ? WHERE user_id = ?")) {
-            pstmt.setInt(1, score);
-            pstmt.setString(2, id);
-            if (pstmt.executeUpdate() > 0) {
-                map.put("success", true);
-            } else {
-                map.put("success", false);
-            }
-
-        } catch (SQLException | URISyntaxException ex) {
-            map.put("success", false);
-        }
-        return map;
-    }
-
     static Map<String, Boolean> addUserTransientIVORN(String id, String ivorn) {
         Map map = new HashMap<>();
         try (Connection connection = DatabaseUrl.extract().getConnection(); PreparedStatement pstmt = connection.prepareStatement("UPDATE users SET transient_ivorns = array_append(transient_ivorns, ?::text), score = score + ? WHERE user_id = ?")) {
