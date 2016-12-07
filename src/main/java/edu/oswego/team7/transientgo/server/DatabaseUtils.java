@@ -44,7 +44,6 @@ class DatabaseUtils {
             pstmt.setString(1, id);
             PasswordAuthentication auth = new PasswordAuthentication();
             pstmt.setString(2, auth.hash(pass.toCharArray()));
-            pstmt.setString(2, pass);
             pstmt.setString(3, name);
             if (pstmt.executeUpdate() > 0) {
                 map.put("success", true);
