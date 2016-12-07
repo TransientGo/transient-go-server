@@ -114,6 +114,7 @@ class DatabaseUtils {
             //PasswordAuthentication auth = new PasswordAuthentication();
             if (rs.next()) {
                 String storedPass = rs.getString("salted_hash");
+                System.out.println("Stored Pass: " + storedPass);
                 //if (auth.authenticate(pass.toCharArray(), storedPass)) {
                 if(pass.equals(storedPass)) {
                     return true;
