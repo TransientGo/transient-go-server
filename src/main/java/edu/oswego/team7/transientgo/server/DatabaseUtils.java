@@ -108,7 +108,7 @@ class DatabaseUtils {
     }
 
     static boolean authenticate(String user, String pass) {
-        try (Connection connection = DatabaseUrl.extract().getConnection(); PreparedStatement pstmt = connection.prepareStatement("SELECT password FROM users WHERE user_id = ?")) {
+        try (Connection connection = DatabaseUrl.extract().getConnection(); PreparedStatement pstmt = connection.prepareStatement("SELECT salted_hash FROM users WHERE user_id = ?")) {
             pstmt.setString(1, user);
             ResultSet rs = pstmt.executeQuery();
             //PasswordAuthentication auth = new PasswordAuthentication();
