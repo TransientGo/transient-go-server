@@ -74,7 +74,7 @@ class DatabaseUtils {
         Leaderboard leaderboard = new Leaderboard();
         try (Connection connection = DatabaseUrl.extract().getConnection()) {
             PreparedStatement pstmt = connection.prepareStatement("SELECT name, score FROM users ORDER BY score DESC LIMIT ?");
-            pstmt.setInt(1, 1);
+            pstmt.setInt(1, 10);
             ResultSet rs = pstmt.executeQuery();
             while (rs.next()) {
                 leaderboard.addLeader(new Leader(rs.getString("name"), rs.getInt("score")));
