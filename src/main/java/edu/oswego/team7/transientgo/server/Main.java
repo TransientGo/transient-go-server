@@ -39,7 +39,6 @@ public class Main {
         before("/v1/user/:id/*", (request, response) -> authenticate(request));
         post("/v1/user", (request, response) -> DatabaseUtils.createUser(request.queryParams("id"), request.queryParams("pass"), request.queryParams("name")), gson::toJson);
         get("/v1/user/:id", (request, response) -> DatabaseUtils.getUserByID(request.params(":id")), gson::toJson);
-        //put("/v1/user/:id/score/:score", (request, response) -> DatabaseUtils.updateUserScore(request.params(":id"), Integer.parseInt(request.params(":score"))), gson::toJson);
         put("/v1/user/:id/transient/:ivorn", (request, response) -> DatabaseUtils.addUserTransientIVORN(request.params(":id"), request.params(":ivorn")), gson::toJson);
         get("/v1/leaderboard", (request, response) -> DatabaseUtils.getLeaderboard(), gson::toJson);
         after((request, response) -> {
