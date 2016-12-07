@@ -56,7 +56,6 @@ public class Main {
             String user = tokens[0];
             String pass = tokens[1];
             String id = request.params(":id");
-            System.out.println("user: " + user + " pass: " + pass + " id:" + id);
             if(!(DatabaseUtils.authenticate(user, pass) && user.equals(id))) {
                 halt(401, "Authentication Error");
             }
