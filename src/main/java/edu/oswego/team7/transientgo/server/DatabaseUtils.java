@@ -42,8 +42,9 @@ class DatabaseUtils {
         Map map = new HashMap<>();
         try (Connection connection = DatabaseUrl.extract().getConnection(); PreparedStatement pstmt = connection.prepareStatement("INSERT INTO users(user_id, salted_hash, name, score, transient_ivorns) VALUES(?, ?, ?, 0, '{}')")) {
             pstmt.setString(1, id);
-            PasswordAuthentication auth = new PasswordAuthentication();
-            pstmt.setString(2, auth.hash(pass.toCharArray()));
+            //PasswordAuthentication auth = new PasswordAuthentication();
+            //pstmt.setString(2, auth.hash(pass.toCharArray()));
+            pstmt.setString(2, pass);
             pstmt.setString(3, name);
             if (pstmt.executeUpdate() > 0) {
                 map.put("success", true);
@@ -110,10 +111,11 @@ class DatabaseUtils {
         try (Connection connection = DatabaseUrl.extract().getConnection(); PreparedStatement pstmt = connection.prepareStatement("SELECT password FROM users WHERE user_id = ?")) {
             pstmt.setString(1, user);
             ResultSet rs = pstmt.executeQuery();
-            PasswordAuthentication auth = new PasswordAuthentication();
+            //PasswordAuthentication auth = new PasswordAuthentication();
             if (rs.next()) {
                 String storedPass = rs.getString("salted_hash");
-                if (auth.authenticate(pass.toCharArray(), storedPass)) {
+                //if (auth.authenticate(pass.toCharArray(), storedPass)) {
+                if(pass.equals(storedPass)) {
                     return true;
                 }
             }
